@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+}
+
+group 'dev.flanker'
+version '1.0-SNAPSHOT'
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'jakarta.annotation', name: 'jakarta.annotation-api', version: '2.0.0-RC1'
+    compile group: 'jakarta.inject', name: 'jakarta.inject-api', version: '2.0.0'
+    compile group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.0'
+
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.12'
+
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+
+    testCompile 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testCompile 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
