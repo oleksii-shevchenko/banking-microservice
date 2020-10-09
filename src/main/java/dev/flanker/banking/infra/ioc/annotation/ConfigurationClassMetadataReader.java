@@ -12,8 +12,12 @@ import java.util.Set;
 
 import static org.reflections.ReflectionUtils.getAllMethods;
 
-public class ConfigurationObjectMetadataReader implements ConfigurationMetadataReader {
-    private static final ConfigurationObjectMetadataReader INSTANCE = new ConfigurationObjectMetadataReader();
+public class ConfigurationClassMetadataReader implements ConfigurationMetadataReader {
+    private static final ConfigurationClassMetadataReader INSTANCE = new ConfigurationClassMetadataReader();
+
+    public static ConfigurationClassMetadataReader getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public ConfigurationMetadata read(Class<?> configuration) {

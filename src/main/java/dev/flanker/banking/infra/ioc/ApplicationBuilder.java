@@ -1,26 +1,17 @@
 package dev.flanker.banking.infra.ioc;
 
-import dev.flanker.banking.infra.ioc.annotation.ClassBeanDefinitionReader;
-import dev.flanker.banking.infra.ioc.annotation.ObjectBeanDefinitionReader;
+public interface ApplicationBuilder {
+    ApplicationBuilder addPackageScan(String pkg);
 
-public interface ApplicationContextBuilder {
-    ApplicationContextBuilder addPackageScan(String pkg);
+    ApplicationBuilder addConfiguration(Class<?> cfg);
 
-    ApplicationContextBuilder addConfiguration(Class<?> cfg);
+    ApplicationBuilder addPropertySource(String src);
 
-    ApplicationContextBuilder setAutoConfigurationLoad(boolean flg);
+    ApplicationBuilder addBeanPostProcessor(Class<? extends BeanPostProcessor> bpp);
 
-    ApplicationContextBuilder addPropertySource(String src);
+    ApplicationBuilder addBeanProxyPostProcessor(Class<? extends BeanProxyPostProcessor> bpp);
 
-    ApplicationContextBuilder addBeanPostProcessor(Class<? extends BeanPostProcessor> bpp);
+    ApplicationBuilder setArgs(String[] args);
 
-    ApplicationContextBuilder addBeanProxyPostProcessor(Class<? extends BeanProxyPostProcessor> bpp);
-
-    ApplicationContextBuilder setArgs(String[] args);
-
-    ApplicationContextBuilder setClassBeanDefinitionReader(Class<? extends ClassBeanDefinitionReader> cbdr);
-
-    ApplicationContextBuilder setObjectBeanDefinitionReader(Class<? extends ObjectBeanDefinitionReader> obdr);
-
-    ApplicationContext build() throws Exception;
+    ApplicationContext build();
 }

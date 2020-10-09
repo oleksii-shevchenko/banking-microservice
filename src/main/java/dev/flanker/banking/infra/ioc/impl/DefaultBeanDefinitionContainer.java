@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class MapBeanDefinitionContainer implements BeanDefinitionContainer {
+public class DefaultBeanDefinitionContainer implements BeanDefinitionContainer {
     private final Map<String, BeanDefinition> beanDefinitions;
 
     private final Map<Class<?>, Map<String, BeanDefinition>> beanDefinitionsIndex;
 
-    private MapBeanDefinitionContainer(Map<String, BeanDefinition> beanDefinitions,
-                                       Map<Class<?>, Map<String, BeanDefinition>> beanDefinitionsIndex) {
+    private DefaultBeanDefinitionContainer(Map<String, BeanDefinition> beanDefinitions,
+                                           Map<Class<?>, Map<String, BeanDefinition>> beanDefinitionsIndex) {
         this.beanDefinitions = beanDefinitions;
         this.beanDefinitionsIndex = beanDefinitionsIndex;
     }
@@ -33,7 +33,8 @@ public class MapBeanDefinitionContainer implements BeanDefinitionContainer {
                     .findAny()
                     .get();
         } else {
-            throw new RuntimeException("Found multiple implementations of class [" + beanClass.getSimpleName() + "]");
+            var count = beans != null ? beans.size() : 0;
+            throw new RuntimeException("Found " + count + " implementations of class [" + beanClass.getSimpleName() + "]");
         }
     }
 
@@ -64,16 +65,16 @@ public class MapBeanDefinitionContainer implements BeanDefinitionContainer {
 
         @Override
         public BeanDefinitionContainerBuilder add(BeanDefinition beanDefinition) {
-            if (beanDefinitions.containsKey(beanDefinition.getBeanId())) {
-                throw new RuntimeException("Already contains with key [" + beanDefinition.getBeanId() + "]");
+            if (beanDefinitions.containsKey(beanDefinition.id())) {
+                throw new RuntimeException("Already contains with key [" + beanDefinition.id() + "]");
             }
-            beanDefinitions.put(beanDefinition.getBeanId(), beanDefinition);
+            beanDefinitions.put(beanDefinition.id(), beanDefinition);
             return this;
         }
 
         @Override
         public BeanDefinitionContainer build() {
-            return new MapBeanDefinitionContainer(new HashMap<>(beanDefinitions), buildIndex());
+            return new DefaultBeanDefinitionContainer(new HashMap<>(beanDefinitions), buildIndex());
         }
 
         private Map<Class<?>, Map<String, BeanDefinition>> buildIndex() {
@@ -82,9 +83,9 @@ public class MapBeanDefinitionContainer implements BeanDefinitionContainer {
                 var beanDefinition = beanPair.getValue();
                 var beanId = beanPair.getKey();
 
-                beansIndex.putIfAbsent(beanDefinition.getBeanClass(), new HashMap<>());
-                beansIndex.get(beanDefinition.getBeanClass()).put(beanId, beanDefinition);
-                for (var beanInterface : beanDefinition.getBeanInterfaces()) {
+                beansIndex.putIfAbsent(beanDefinition.beanClass(), new HashMap<>());
+                beansIndex.get(beanDefinition.beanClass()).put(beanId, beanDefinition);
+                for (var beanInterface : beanDefinition.interfaces()) {
                     beansIndex.putIfAbsent(beanInterface, new HashMap<>());
                     beansIndex.get(beanInterface).put(beanId, beanDefinition);
                 }
@@ -92,5 +93,18 @@ public class MapBeanDefinitionContainer implements BeanDefinitionContainer {
             }
             return beansIndex;
         }
+    }
+
+    @Override
+    public boolean containsBeanDefinition(String beanId) {
+        return beanDefinitions.containsKey(beanId);
+    }
+
+    @Override
+    public boolean containsBeanDefinition(Class<?> beanClass) {
+        if (!beanDefinitionsIndex.containsKey(beanClass)) {
+            return false;
+        }
+        return !beanDefinitionsIndex.get(beanClass).isEmpty();
     }
 }

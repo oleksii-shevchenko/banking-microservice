@@ -15,7 +15,9 @@ dependencies {
     compile group: 'jakarta.inject', name: 'jakarta.inject-api', version: '2.0.0'
     compile group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.0'
 
-    compile group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
+
+    compile group: 'org.reflections', name: 'reflections', version: '0.9.11'
 
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
@@ -26,4 +28,16 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += "--enable-preview"
+}
+
+tasks.withType(Test) {
+    jvmArgs += "--enable-preview"
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs += '--enable-preview'
 }

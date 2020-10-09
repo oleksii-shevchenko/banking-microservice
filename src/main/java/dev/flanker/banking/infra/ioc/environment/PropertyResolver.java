@@ -2,8 +2,8 @@ package dev.flanker.banking.infra.ioc.environment;
 
 import dev.flanker.banking.infra.ioc.Environment;
 
-public interface PropertyPlaceholderResolver {
+public interface PropertyResolver {
     String resolve(Environment environment, String placeholderOrValue);
 
-    Object resolve(Environment environment, String placeholderOrValue, Class<?> propertyType);
+    <T> T resolve(Environment environment, String placeholderOrValue, Class<T> propertyType);
 }

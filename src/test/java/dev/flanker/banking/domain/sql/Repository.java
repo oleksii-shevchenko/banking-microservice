@@ -1,2 +1,4 @@
-package dev.flanker.banking.domain.sql;public interface Repository {
+package dev.flanker.banking.domain.sql;
+
+public interface Repository extends AutoCloseable {
 }

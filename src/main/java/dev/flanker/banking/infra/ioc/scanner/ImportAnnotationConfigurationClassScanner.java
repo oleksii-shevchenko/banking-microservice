@@ -1,6 +1,7 @@
-package dev.flanker.banking.infra.ioc.annotation;
+package dev.flanker.banking.infra.ioc.scanner;
 
 import dev.flanker.banking.infra.annotations.Import;
+import dev.flanker.banking.infra.ioc.scanner.ConfigurationClassScanner;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,9 +20,10 @@ public class ImportAnnotationConfigurationClassScanner implements ConfigurationC
     private Set<Class<?>> scan(Class<?> configuration, Set<Class<?>> configurationSet) {
         configurationSet.add(configuration);
         if (configuration.isAnnotationPresent(Import.class)) {
-            var importAnnotation = configuration.getAnnotation(Import.class);
-            for (Class<?> imported : importAnnotation.configurations()) {
-                scan(imported, configurationSet);
+            for (Import importAnnotation : configuration.getAnnotationsByType(Import.class)) {
+                for (Class<?> imported : importAnnotation.configurations()) {
+                    scan(imported, configurationSet);
+                }
             }
         }
         return configurationSet;

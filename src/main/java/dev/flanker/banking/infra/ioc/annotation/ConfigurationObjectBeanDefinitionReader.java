@@ -12,8 +12,14 @@ import org.reflections.ReflectionUtils;
 
 import static org.reflections.ReflectionUtils.getAllMethods;
 
-public class ConfigurationClassBeanDefinitionReader implements ObjectBeanDefinitionReader {
+public class ConfigurationObjectBeanDefinitionReader implements ObjectBeanDefinitionReader {
+    private static final ConfigurationObjectBeanDefinitionReader INSTANCE = new ConfigurationObjectBeanDefinitionReader();
+
     private static final String EMPTY_STRING = "";
+
+    public static ConfigurationObjectBeanDefinitionReader getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public List<BeanDefinition> read(Object source) {

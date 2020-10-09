@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 import static org.reflections.ReflectionUtils.getMethods;
 
-public class AutoPropertyPlaceholderResolver implements PropertyPlaceholderResolver {
-    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("^\\$\\{(?<key>[\\w.]+)(:(?<val>[^[:$}]]+))?\\}$");
+public class AutoPropertyResolver implements PropertyResolver {
+    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("^\\$\\{(?<key>[\\w.]+)(:(?<val>[^[:$}]]+))?}$");
 
     private static final Map<Class<?>, Class<?>> WRAPPERS = Map.of(
             boolean.class, Boolean.class,
@@ -36,11 +36,14 @@ public class AutoPropertyPlaceholderResolver implements PropertyPlaceholderResol
     }
 
     @Override
-    public Object resolve(Environment environment, String placeholderOrValue, Class<?> propertyType) {
+    public <T> T resolve(Environment environment, String placeholderOrValue, Class<T> propertyType) {
+        if (propertyType.equals(String.class)) {
+            return (T) resolve(environment, placeholderOrValue);
+        }
         var value = resolve(environment, placeholderOrValue);
         var factoryMethod = resolveFactoryMethod(propertyType);
         try {
-            return factoryMethod.invoke(null, value);
+            return propertyType.cast(factoryMethod.invoke(null, value));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }

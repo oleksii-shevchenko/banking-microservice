@@ -1,4 +1,4 @@
-package dev.flanker.banking.infra.ioc.annotation;
+package dev.flanker.banking.infra.ioc.scanner;
 
 import java.util.Set;
 

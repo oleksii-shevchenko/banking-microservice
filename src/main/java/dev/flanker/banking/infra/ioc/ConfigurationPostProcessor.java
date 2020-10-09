@@ -1,2 +1,5 @@
-package dev.flanker.banking.infra;public interface ConfigurationPostProcessor {
+package dev.flanker.banking.infra.ioc;
+
+public interface ConfigurationPostProcessor {
+    void configure(Object configurationObject, Environment environment);
 }

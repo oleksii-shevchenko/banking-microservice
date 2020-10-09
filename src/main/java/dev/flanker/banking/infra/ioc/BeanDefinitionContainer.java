@@ -1,13 +1,18 @@
 package dev.flanker.banking.infra.ioc;
 
+import dev.flanker.banking.infra.ioc.domain.BeanDefinition;
 import java.util.Map;
 
-public interface BeanContainer {
-    Object getBean(String beanId);
+public interface BeanDefinitionContainer {
+    BeanDefinition getBeanDefinition(String beanId);
 
-    Object getBean(Class<?> beanClass);
+    BeanDefinition getBeanDefinition(Class<?> beanClass);
 
-    Map<String, Object> getBeans(Class<?> beanClass);
+    Map<String, BeanDefinition> getBeanDefinitions(Class<?> beanClass);
 
-    Map<String, Object> getAllBeans();
+    Map<String, BeanDefinition> getAllBeanDefinitions();
+
+    boolean containsBeanDefinition(String beanId);
+
+    boolean containsBeanDefinition(Class<?> beanClass);
 }
