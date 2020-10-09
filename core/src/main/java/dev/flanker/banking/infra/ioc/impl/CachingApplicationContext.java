@@ -27,8 +27,6 @@ public class CachingApplicationContext implements ApplicationContext {
 
     private final Environment environment;
 
-    private final AtomicBoolean created = new AtomicBoolean(false);
-
     public CachingApplicationContext(BeanDefinitionContainer beanDefinitions,
                                      ContextAwareBeanFactory beanFactory,
                                      Environment environment) {
@@ -59,15 +57,10 @@ public class CachingApplicationContext implements ApplicationContext {
                 .forEach(this::getBean);
 
         Runtime.getRuntime().addShutdownHook(new Thread(this::close));
-
-        created.set(true);
     }
 
     @Override
     public Object getBean(String beanId) {
-        if (beans.containsKey(beanId)) {
-            LOGGER.info("Found created bean in cache [id=" + beanId + "]");
-        }
         if (beanDefinitions.containsBeanDefinition(beanId)) {
             return beans.computeIfAbsent(beanId, id -> beanFactory.createBean(beanDefinitions.getBeanDefinition(id)));
         } else {
@@ -91,8 +84,7 @@ public class CachingApplicationContext implements ApplicationContext {
             return null;
         }
         var beanDefinition = beanDefinitions.getBeanDefinition(beanClass);
-        var bean = getBean(beanDefinition.id());
-        return bean != null ? beanClass.cast(bean) : null;
+        return getBean(beanDefinition.id(), beanClass);
     }
 
     @Override
@@ -100,9 +92,7 @@ public class CachingApplicationContext implements ApplicationContext {
         return beanDefinitions.getBeanDefinitions(beanClass)
                 .values()
                 .stream()
-                .map(beanDefinition -> getBean(beanDefinition.id()))
-                .filter(Objects::nonNull)
-                .map(beanClass::cast)
+                .map(beanDefinition -> getBean(beanDefinition.id(), beanClass))
                 .collect(Collectors.toSet());
     }
 

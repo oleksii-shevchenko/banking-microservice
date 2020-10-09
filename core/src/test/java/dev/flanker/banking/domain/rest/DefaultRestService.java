@@ -10,8 +10,11 @@ public class DefaultRestService implements RestService {
     @Value("2020-09-09")
     private LocalDate date;
 
+    @Value("${artifactory_userp:test}")
+    private String au;
+
     @PreDestroy
     public void t() {
-        System.out.println(date);
+        System.out.println(au);
     }
 }
